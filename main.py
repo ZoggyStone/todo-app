@@ -1,57 +1,76 @@
-import tkinter as tk
-from tkinter import simpledialog
+import customtkinter as ctk
+
+app = ctk.CTk()
+app.geometry('500x500')
+
+tabview = ctk.CTkTabview(master=app)
+tabview.pack(padx=20, pady=20)
+
+# Adding tabs
+Notes = tabview.add("Notes")
+TODO = tabview.add("TODO")
+Reminders = tabview.add("Reminders")
+
+# Notes tab
+label_1 = ctk.CTkLabel(master=tabview.tab("Notes"), text="Write your notes here.")
+label_1.pack(padx=20, pady=20)
+
+textbox_notes = ctk.CTkTextbox(master=tabview.tab("Notes"), activate_scrollbars=True, height=10)
+textbox_notes.pack(padx=20, pady=20, fill='both', expand=True)
+
+# To Do tab
+label_2 = ctk.CTkLabel(master=tabview.tab("TODO"), text="Your To Do's:")
+label_2.pack(padx=20, pady=5)
+
+listbox_todo = ctk.CTkTextbox(master=tabview.tab("TODO"), activate_scrollbars=True, height=10, state="disabled")
+listbox_todo.pack(padx=20, pady=10, fill='both', expand=True)
 
 
-class ToDoApp:
-    def __init__(self):
-        self.window = tk.Tk()
-        self.window.title('To Do App')
-        self.window.geometry('300x450')
+def add_todo():
+    def save_todo():
+        todo_item = entry.get()
+        listbox_todo.configure(state="normal")
+        listbox_todo.insert(ctk.END, todo_item + "\n")
+        listbox_todo.configure(state="disabled")
+        new_window.destroy()
 
-        # Create frames for each category view
-        self.todo_frame = self.create_frame('To Do')
-        self.reminder_frame = self.create_frame('Reminders')
-        self.note_frame = self.create_frame('Notes')
+    new_window = ctk.CTkToplevel(app)
+    new_window.geometry("300x100")
+    label = ctk.CTkLabel(new_window, text="Enter a new To Do:")
+    label.pack()
+    entry = ctk.CTkEntry(new_window)
+    entry.pack()
+    save_button = ctk.CTkButton(new_window, text="Save To Do", command=save_todo)
+    save_button.pack()
 
-        # Create buttons to navigate between frames
-        self.create_nav_button('To Do', self.todo_frame)
-        self.create_nav_button('Reminders', self.reminder_frame)
-        self.create_nav_button('Notes', self.note_frame)
+button = ctk.CTkButton(master=tabview.tab("TODO"), text="Add To Do", command=add_todo)
+button.pack(padx=20, pady=20)
 
-        # Show initial frame
-        self.show_frame(self.todo_frame)
+# Reminders tab
+label_3 = ctk.CTkLabel(master=tabview.tab("Reminders"), text="Your Reminders:")
+label_3.pack(padx=20, pady=5)
 
-    def create_frame(self, title):
-        frame = tk.Frame(self.window)
-        tk.Label(frame, text=title).pack()
-        text_area = tk.Text(frame, height=10, width=15)
-        text_area.pack()
-        button = tk.Button(frame, text=f'Add {title}', command=lambda: self.add_item(text_area))
-        button.pack()
+listbox_reminders = ctk.CTkTextbox(master=tabview.tab("Reminders"), activate_scrollbars=True, height=10, state="disabled")
+listbox_reminders.pack(padx=20, pady=10, fill='both', expand=True)
 
-        return frame
+def add_reminder():
+    def save_reminder():
+        reminder_item = entry.get()
+        listbox_reminders.configure(state="normal")
+        listbox_reminders.insert(ctk.END, reminder_item + "\n")
+        listbox_reminders.configure(state="disabled")
+        new_window.destroy()
 
-    def create_nav_button(self, text, frame):
-        button = tk.Button(self.window, text=text, command=lambda: self.show_frame(frame))
-        button.pack(side='left')
+    new_window = ctk.CTkToplevel(app)
+    new_window.geometry("300x100")
+    label = ctk.CTkLabel(new_window, text="Enter a new Reminder:")
+    label.pack()
+    entry = ctk.CTkEntry(new_window)
+    entry.pack()
+    save_button = ctk.CTkButton(new_window, text="Save Reminder", command=save_reminder)
+    save_button.pack()
 
-    def show_frame(self, frame):
-        # Hide all frames
-        self.todo_frame.pack_forget()
-        self.reminder_frame.pack_forget()
-        self.note_frame.pack_forget()
-        # Show the target frame
-        frame.pack()
+button = ctk.CTkButton(master=tabview.tab("Reminders"), text="Add Reminder", command=add_reminder)
+button.pack(padx=20, pady=20)
 
-    def add_item(self, text_area):
-        item = simpledialog.askstring('New Item', 'Enter the item:')
-        if item:
-            text_area.insert(tk.END, f'\n{item}')
-
-    def run(self):
-        self.window.mainloop()
-
-
-if __name__ == '__main__':
-    app = ToDoApp()
-    app.run()
+app.mainloop()
